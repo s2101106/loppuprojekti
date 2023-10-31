@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "qJ9X4HEoPVYN3V/Qm1QxoQgFQgwKZQGb72C4w2nUGXcO+6eEvhH/AvYyJwzkpzw9+Pm7NzlGBft0MabKK5NPdQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\Loppupeli.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\s2101106\\.nuget\\packages\\microsoft.toolkit.highperformance\\7.1.2\\microsoft.toolkit.highperformance.7.1.2.nupkg.sha512",
+    "C:\\Users\\s2101106\\.nuget\\packages\\raylib-cslo\\4.2.0.9\\raylib-cslo.4.2.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}
