@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\Loppupeli.csproj": {}
+    "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\loppuprojekti\\Loppupeli\\Loppupeli.csproj": {}
   },
   "projects": {
-    "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\Loppupeli.csproj": {
+    "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\loppuprojekti\\Loppupeli\\Loppupeli.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\Loppupeli.csproj",
+        "projectUniqueName": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\loppuprojekti\\Loppupeli\\Loppupeli.csproj",
         "projectName": "Loppupeli",
-        "projectPath": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\Loppupeli.csproj",
+        "projectPath": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\loppuprojekti\\Loppupeli\\Loppupeli.csproj",
         "packagesPath": "C:\\Users\\s2101106\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\Loppupeli\\obj\\",
+        "outputPath": "C:\\Users\\s2101106\\OneDrive - Business College Helsinki\\NETFRAM\\loppu\\loppuprojekti\\Loppupeli\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\s2101106\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Raylib-CsLo": {
               "target": "Package",
               "version": "[4.2.0.9, )"

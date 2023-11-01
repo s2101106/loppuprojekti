@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Raylib_CsLo;
 using static System.Formats.Asn1.AsnWriter;
+using TurboMapReader;
 
 namespace Loppupeli
 {
@@ -12,6 +13,7 @@ namespace Loppupeli
     {
         const int window_width = 640;
         const int window_height = 420;
+  
         public Peli() 
         { 
         
@@ -24,6 +26,9 @@ namespace Loppupeli
         void Init()
         {
             Raylib.InitWindow(window_width, window_height, "LoppyPeli");
+            TiledMap tiledKartta;
+            tiledKartta=MapReader.LoadMapFromFile("karttatedsti.tmj");
+            tiledKartta.PrintToConsole();
             Raylib.SetTargetFPS(30);
         }
         void GameLoop()
@@ -37,7 +42,7 @@ namespace Loppupeli
         void DrawGame()
         {
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Raylib.BLUE);
+
             Raylib.DrawCircle(window_width / 2, window_height / 2, 20, Raylib.MAROON);
             Raylib.DrawText(Raylib.TextFormat($"Score:500"), 550, 400, 20, Raylib.RED);
             Raylib.EndDrawing();
