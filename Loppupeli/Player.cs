@@ -11,10 +11,13 @@ namespace Loppupeli
     {
         public TransformComponent transform { get; private set; }
         public bool active = false;
+        public bool isGround;
         SpriteRenderer spriteRenderer;
         public CollisionComponent collision;
         public int gravity = 2;
-        public int groundYPos=130;
+        public int groundYPos=230;
+
+        public float direction = 0.0f;
 
         public Player(Vector2 startPos, float speed, int size, Texture image, Color color)
         {
@@ -26,25 +29,33 @@ namespace Loppupeli
         public void Update()
         {
             float deltaTime = Raylib.GetFrameTime();
-            if (isGrounded(transform.position.Y)==false)
+            if (isGround==false)
             {
+                isGrounded(transform.position.Y);
                 transform.position.Y += gravity;
             }
             if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && active == true)
             {
-                transform.position.X -= transform.speed * deltaTime;
+                direction = -1.0f;
+                transform.position.X += direction * transform.speed * deltaTime;
             }
             if (Raylib.IsKeyDown(KeyboardKey.KEY_D) && active == true)
             {
-                transform.position.X += transform.speed * deltaTime;
+                direction = 1.0f;
+                transform.position.X += direction * transform.speed * deltaTime;
             }
             if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && active == true)
             {
                 transform.position.Y += transform.speed * deltaTime;
             }
-            if(Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && active == true&& isGrounded(transform.position.Y))
+            if(Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && active == true&& isGround==true)
             {
                 transform.position.Y -= (transform.speed*10) * deltaTime;
+                isGrounded(transform.position.Y);
+            }
+            else
+            {
+                direction = 0.0f;
             }
         }
         public void Draw()
@@ -55,10 +66,10 @@ namespace Loppupeli
                 spriteRenderer.Draw();
             }
         }
-        bool isGrounded(float yPositio)
+        public void isGrounded(float yPositio)
         {
-            if (yPositio < groundYPos) {  return false; }
-            else { return true; }
+            if (yPositio < groundYPos) { isGround = false; }
+            else { isGround = true; }
         }
     }
 }

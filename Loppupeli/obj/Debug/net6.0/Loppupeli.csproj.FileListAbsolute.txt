@@ -58,3 +58,4 @@ C:\Users\s2101106\OneDrive - Business College Helsinki\NETFRAM\loppu\loppuprojek
 C:\Users\s2101106\OneDrive - Business College Helsinki\NETFRAM\loppu\loppuprojekti\Loppupeli\bin\Debug\net6.0\kuvat\ufoRed.png
 C:\Users\s2101106\OneDrive - Business College Helsinki\NETFRAM\loppu\loppuprojekti\Loppupeli\bin\Debug\net6.0\kuvat\sheet.png
 C:\Users\s2101106\OneDrive - Business College Helsinki\NETFRAM\loppu\loppuprojekti\Loppupeli\bin\Debug\net6.0\kartta1.tmj
+C:\Users\s2101106\OneDrive - Business College Helsinki\NETFRAM\loppu\loppuprojekti\Loppupeli\bin\Debug\net6.0\kuvat\loppuGemi.png

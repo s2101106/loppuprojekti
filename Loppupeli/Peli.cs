@@ -18,14 +18,18 @@ namespace Loppupeli
         Player player;
         Texture playerImage;
         Texture enemyImage;
+        Texture gemImage;
         Texture atlasImage;
         Camera2D camera;
         float cameraX;
         float cameraY;
         Enemy enemy;
+        Gem gem;
         Vector2 playerStart;
         Vector2 enemyStart;
+        Vector2 gemStart;
         List<Rectangle> mapColliders=new List<Rectangle>();
+        float collisionAmount;
         public Peli() 
         { 
         
@@ -40,15 +44,18 @@ namespace Loppupeli
             Raylib.InitWindow(window_width, window_height, "LoppyPeli");
             playerImage = Raylib.LoadTexture("kuvat\\ufoRed.png");
             enemyImage = Raylib.LoadTexture("kuvat\\ufoRed.png");
+            gemImage = Raylib.LoadTexture("kuvat\\loppuGemi.png");
             atlasImage = Raylib.LoadTexture("kuvat\\sheet.png");
             float playerSpeed = 120;
             int playerSize =16;
-            Vector2 playerStart=new Vector2(40, 120);
+            Vector2 playerStart=new Vector2(0, 80);
+            Vector2 gemStart = new Vector2(60, 120);
             Vector2 enemyStart = new Vector2(-10, 300 - playerSize);
             player =new Player(playerStart, playerSpeed, playerSize,playerImage,Raylib.RED);
             enemy = new Enemy(enemyStart, new Vector2(1,0),playerSpeed,playerSize, enemyImage);
+            gem = new Gem(gemStart, new Vector2(1, 0), playerSpeed, playerSize, gemImage);
             camera.target=player.transform.position;
-            camera.zoom = 1.0f;
+            camera.zoom = 2.0f;
             tiledKartta=MapReader.LoadMapFromFile("kartta1.tmj");
             tiledKartta.PrintToConsole();
             Raylib.SetTargetFPS(30);
@@ -84,6 +91,7 @@ namespace Loppupeli
             }
             player.Draw();
             enemy.Draw();
+            gem.Draw();
             /*
             //oikee
             Raylib.DrawRectangle(40+12, 120+1, 4, 14, Raylib.BLUE);
@@ -94,6 +102,14 @@ namespace Loppupeli
             //top
             Raylib.DrawRectangle(40+1, 120, 14, 4, Raylib.RED);
             */
+            //oikee
+            Raylib.DrawRectangle(-30+12, 130+2, 4, 12, Raylib.BLUE);
+            //vasen
+            Raylib.DrawRectangle(-30, 130+2, 4, 12, Raylib.DARKGREEN);
+            //bot
+            Raylib.DrawRectangle(-30 +2,130+12,12,4,Raylib.WHITE);
+            //top
+            Raylib.DrawRectangle(-30 +2, 130, 12, 4, Raylib.RED);
             Raylib.DrawCircle(window_width / 2, window_height / 2, 20, Raylib.MAROON);
             Raylib.DrawText(Raylib.TextFormat($"Score:500"), 550, 400, 20, Raylib.RED);
         }
@@ -104,11 +120,11 @@ namespace Loppupeli
             cameraX = player.transform.position.X - 100;
             cameraY= player.transform.position.Y - 100;
             camera.target=new Vector2(cameraX,cameraY);
-            if (enemy.transform.position.X > enemyStart.X + 100)
+            if (enemy.transform.position.X < enemyStart.X + 40)
             {
                 enemy.transform.direction.X *= -1.0f;
             }
-            if (enemy.transform.position.X < enemyStart.X - 100)
+            if (enemy.transform.position.X > enemyStart.X - 40)
             {
                 enemy.transform.direction.X *= -1.0f;
             }
@@ -122,30 +138,42 @@ namespace Loppupeli
                 {
                     if (Raylib.CheckCollisionRecs(collider, playerLRec))
                     {
-                        Console.WriteLine("OSUIT liikkuessa vasemmalle!");
-                        player.transform.position.X+=0.5f;
+                        collisionAmount= (collider.x + 16)-player.transform.position.X;
+                        player.transform.position.X+=collisionAmount;
+                        Console.WriteLine($"OSUIT liikkuessa vasemmalle!");
                         Console.WriteLine(mapColliders.Count.ToString());
                     }
-                    if (Raylib.CheckCollisionRecs(collider, playerRRec))
+                    else if (Raylib.CheckCollisionRecs(collider, playerRRec))
                     {
-                        Console.WriteLine("OSUIT liikkuessa oikealle!");
-                        player.transform.position.X-=0.5f;
+                        collisionAmount = (collider.x - 16) - player.transform.position.X;
+                        player.transform.position.X += collisionAmount;
+                        Console.WriteLine($"OSUIT liikkuessa oikealle! {collider.x} {player.transform.position.X} {collisionAmount}");
                         Console.WriteLine(mapColliders.Count.ToString());
                     }
-                    if (Raylib.CheckCollisionRecs(collider, playerTRec))
+                    else if (Raylib.CheckCollisionRecs(collider, playerTRec))
                     {
+                        collisionAmount = (collider.y + 16) - player.transform.position.Y;
+                        player.transform.position.Y += collisionAmount;
                         Console.WriteLine("OSUIT liikkuessa ylös!");
-                        player.transform.position.Y+=0.5f;
                         Console.WriteLine(mapColliders.Count.ToString());
                     }
-                    if (Raylib.CheckCollisionRecs(collider, playerBRec))
+                    else if (Raylib.CheckCollisionRecs(collider, playerBRec))
                     {
+                        player.isGround = true;
+                        collisionAmount = (collider.y - 16) - player.transform.position.Y;
+                        player.transform.position.Y += collisionAmount;
                         Console.WriteLine("OSUIT liikkuessa alas!");
-                        player.transform.position.Y-=0.5f;
                         Console.WriteLine(mapColliders.Count.ToString());
                     }
 
                 }
+            }
+            Rectangle playerRec = getRectangle(player.transform,player.collision);
+            Rectangle gemRec = getRectangle(gem.transform, gem.collision);
+            if(Raylib.CheckCollisionRecs(gemRec, playerRec))
+            {
+                Console.WriteLine("keräsit timun!");
+                gem.active = false;
             }
         }
         void DrawTile(int x, int y, int tileId)
@@ -172,34 +200,26 @@ namespace Loppupeli
                 t.position.Y, c.size.X, c.size.Y);
             return r;
         }
-                    /*
-            //oikee
-            Raylib.DrawRectangle(40+12, 120+1, 4, 14, Raylib.BLUE);
-            //vasen
-            Raylib.DrawRectangle(40, 120+1, 4, 14, Raylib.DARKGREEN);
-            //bot
-            Raylib.DrawRectangle(40+1,120+12,14,4,Raylib.WHITE);
-            //top
-            Raylib.DrawRectangle(40+1, 120, 14, 4, Raylib.RED);
-            */
+                    
+            
         Rectangle getBRect(TransformComponent t, CollisionComponent c)
         {
-            Rectangle r=new Rectangle(t.position.X+1,t.position.Y+12,c.size.X-2,c.size.Y-12);
+            Rectangle r=new Rectangle(t.position.X+2,t.position.Y+12,c.size.X-4,c.size.Y-12);
             return r;
         }
         Rectangle getTRect(TransformComponent t, CollisionComponent c)
         {
-            Rectangle r = new Rectangle(t.position.X+1, t.position.Y, c.size.X-2, c.size.Y - 12);
+            Rectangle r = new Rectangle(t.position.X+2, t.position.Y, c.size.X-4, c.size.Y - 12);
             return r;
         }
         Rectangle getRRect(TransformComponent t, CollisionComponent c)
         {
-            Rectangle r = new Rectangle(t.position.X+12, t.position.Y+1, c.size.X-12, c.size.Y-2);
+            Rectangle r = new Rectangle(t.position.X+12, t.position.Y+2, c.size.X-12, c.size.Y-4);
             return r;
         }
         Rectangle getLRect(TransformComponent t, CollisionComponent c)
         {
-            Rectangle r = new Rectangle(t.position.X, t.position.Y+1, c.size.X-12, c.size.Y-2);
+            Rectangle r = new Rectangle(t.position.X, t.position.Y+2, c.size.X-12, c.size.Y-4);
             return r;
         }
         Rectangle getRect(int x, int y, int size)

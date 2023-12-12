@@ -19,6 +19,9 @@
     <None Update="karttatedsti.tmj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="kuvat\loppuGemi.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="kuvat\sheet.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
