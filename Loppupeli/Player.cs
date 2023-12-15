@@ -15,7 +15,6 @@ namespace Loppupeli
         SpriteRenderer spriteRenderer;
         public CollisionComponent collision;
         public int gravity = 2;
-        public int groundYPos=230;
 
         public float direction = 0.0f;
 
@@ -31,9 +30,9 @@ namespace Loppupeli
             float deltaTime = Raylib.GetFrameTime();
             if (isGround==false)
             {
-                isGrounded(transform.position.Y);
                 transform.position.Y += gravity;
             }
+
             if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && active == true)
             {
                 direction = -1.0f;
@@ -44,14 +43,10 @@ namespace Loppupeli
                 direction = 1.0f;
                 transform.position.X += direction * transform.speed * deltaTime;
             }
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_S) && active == true)
-            {
-                transform.position.Y += transform.speed * deltaTime;
-            }
             if(Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && active == true&& isGround==true)
             {
+                Console.WriteLine("hyppäsit");
                 transform.position.Y -= (transform.speed*10) * deltaTime;
-                isGrounded(transform.position.Y);
             }
             else
             {
@@ -65,11 +60,6 @@ namespace Loppupeli
                 Raylib.DrawRectangleV(transform.position, collision.size, Raylib.SKYBLUE);
                 spriteRenderer.Draw();
             }
-        }
-        public void isGrounded(float yPositio)
-        {
-            if (yPositio < groundYPos) { isGround = false; }
-            else { isGround = true; }
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Loppupeli
         List<Rectangle> mapColliders=new List<Rectangle>();
         List<Rectangle> mapPiikit=new List<Rectangle>();
         float collisionAmount;
+        public bool isG;
         public Peli() 
         { 
         
@@ -63,6 +64,7 @@ namespace Loppupeli
             //piikkiImage = Raylib.LoadTexture("kuvat\\sheet.png");
             float playerSpeed = 120;
             int playerSize =16;
+            isG = false;
             Vector2 playerStart=new Vector2(0, 80);
             Vector2 gemStart = new Vector2(60, 120);
             Vector2 enemyStart = new Vector2(-10, 300 - playerSize);
@@ -157,7 +159,7 @@ namespace Loppupeli
             //vasen
             Raylib.DrawRectangle(-30, 130+2, 4, 12, Raylib.DARKGREEN);
             //bot
-            Raylib.DrawRectangle(-30 +2,130+12,12,4,Raylib.WHITE);
+            Raylib.DrawRectangle(-28 +2,130+12,8,8,Raylib.WHITE);
             //top
             Raylib.DrawRectangle(-30 +2, 130, 12, 4, Raylib.RED);
             Raylib.DrawCircle(window_width / 2, window_height / 2, 20, Raylib.MAROON);
@@ -174,10 +176,10 @@ namespace Loppupeli
                 state = GameState.DevMenu;
             }
             player.Update();
-            enemy.Update();
             cameraX = player.transform.position.X - 100;
             cameraY= player.transform.position.Y - 100;
             camera.target=new Vector2(cameraX,cameraY);
+            enemy.Update();
             if (enemy.transform.position.X < enemyStart.X + 40)
             {
                 enemy.transform.direction.X *= -1.0f;
@@ -190,10 +192,20 @@ namespace Loppupeli
             Rectangle playerBRec = getBRect(player.transform, player.collision);
             Rectangle playerRRec = getRRect(player.transform, player.collision);
             Rectangle playerLRec = getLRect(player.transform, player.collision);
+            Rectangle playerGRec = getGRect(player.transform, player.collision);
             if (mapColliders.Count >= tiledKartta.layers[0].data.Length)
             {
                 foreach (Rectangle collider in mapColliders)
                 {
+                    if (Raylib.CheckCollisionRecs(collider, playerGRec))
+                    {
+                        isG = true;
+                        break;
+                    }
+                    if (Raylib.CheckCollisionRecs(collider, playerGRec)==false)
+                    {
+                        isG=false;
+                    }
                     if (Raylib.CheckCollisionRecs(collider, playerLRec))
                     {
                         collisionAmount= (collider.x + 16)-player.transform.position.X;
@@ -211,12 +223,14 @@ namespace Loppupeli
                     }
                     else if (Raylib.CheckCollisionRecs(collider, playerBRec))
                     {
-                        player.isGround = true;
                         collisionAmount = (collider.y - 16) - player.transform.position.Y;
                         player.transform.position.Y += collisionAmount;
                     }
 
                 }
+                
+                player.isGround = isG;
+
             }
             Rectangle playerRec = getRectangle(player.transform,player.collision);
             /*if (mapPiikit.Count >= tiledPiikit.layers[0].data.Length)
@@ -296,6 +310,11 @@ namespace Loppupeli
         Rectangle getBRect(TransformComponent t, CollisionComponent c)
         {
             Rectangle r=new Rectangle(t.position.X+2,t.position.Y+12,c.size.X-4,c.size.Y-12);
+            return r;
+        }
+        Rectangle getGRect(TransformComponent t, CollisionComponent c)
+        {
+            Rectangle r = new Rectangle(t.position.X , t.position.Y + 14, c.size.X - 8, c.size.Y - 12);
             return r;
         }
         Rectangle getTRect(TransformComponent t, CollisionComponent c)
