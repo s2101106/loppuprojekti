@@ -93,3 +93,4 @@ D:\NetFRameLoppu\loppuprojekti\Loppupeli\obj\Debug\net6.0\refint\Loppupeli.dll
 D:\NetFRameLoppu\loppuprojekti\Loppupeli\obj\Debug\net6.0\Loppupeli.pdb
 D:\NetFRameLoppu\loppuprojekti\Loppupeli\obj\Debug\net6.0\Loppupeli.genruntimeconfig.cache
 D:\NetFRameLoppu\loppuprojekti\Loppupeli\obj\Debug\net6.0\ref\Loppupeli.dll
+D:\NetFRameLoppu\loppuprojekti\Loppupeli\bin\Debug\net6.0\karttav1.tmj

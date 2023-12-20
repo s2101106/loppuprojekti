@@ -8,6 +8,7 @@ using static System.Formats.Asn1.AsnWriter;
 using TurboMapReader;
 using System.Numerics;
 using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace Loppupeli
 {
@@ -29,21 +30,30 @@ namespace Loppupeli
         Player player;
         Texture playerImage;
         Texture enemyImage;
-        Texture gemImage;
+        Texture gemImage1;
+        Texture gemImage2;
+        Texture gemImage3;
         Texture atlasImage;
         Camera2D camera;
         float cameraX;
         float cameraY;
         Enemy enemy;
-        Gem gem;
+        Gem gem1;
+        Gem gem2;
+        Gem gem3;
         int GemCounter;
+        List<Gem>Gems = new List<Gem>();
         Vector2 playerStart;
         Vector2 enemyStart;
-        Vector2 gemStart;
+        Vector2 gemStart1;
+        Vector2 gemStart2;
+        Vector2 gemStart3;
         List<Rectangle> mapColliders=new List<Rectangle>();
         List<Rectangle> mapPiikit=new List<Rectangle>();
         float collisionAmount;
         public bool isG;
+        public int Lc;
+        public int Rc;
         public Peli() 
         { 
         
@@ -53,31 +63,42 @@ namespace Loppupeli
             Init();
             GameLoop();
         }
+        //Alustetaan peli
         void Init()
         {
             Raylib.InitWindow(window_width, window_height, "LoppyPeli");
             Raylib.SetExitKey(KeyboardKey.KEY_DELETE);
             playerImage = Raylib.LoadTexture("kuvat\\ufoRed.png");
             enemyImage = Raylib.LoadTexture("kuvat\\ufoRed.png");
-            gemImage = Raylib.LoadTexture("kuvat\\loppuGemi.png");
+            gemImage1 = Raylib.LoadTexture("kuvat\\loppuGemi.png");
+            gemImage2 = Raylib.LoadTexture("kuvat\\loppuGemi.png");
+            gemImage3 = Raylib.LoadTexture("kuvat\\loppuGemi.png");
             atlasImage = Raylib.LoadTexture("kuvat\\sheet.png");
-            //piikkiImage = Raylib.LoadTexture("kuvat\\sheet.png");
             float playerSpeed = 120;
             int playerSize =16;
             isG = false;
-            Vector2 playerStart=new Vector2(0, 80);
-            Vector2 gemStart = new Vector2(60, 120);
-            Vector2 enemyStart = new Vector2(-10, 300 - playerSize);
+            Vector2 playerStart=new Vector2(20, 250);
+            Vector2 gemStart1 = new Vector2(60, 120);
+            Vector2 gemStart2 = new Vector2(410, 10);
+            Vector2 gemStart3 = new Vector2(460, 90);
+            Vector2 enemyStart = new Vector2(160, 80 - playerSize);
+            Lc = 140;
+            Rc = 320;
             player =new Player(playerStart, playerSpeed, playerSize,playerImage,Raylib.RED);
             enemy = new Enemy(enemyStart, new Vector2(1,0),playerSpeed,playerSize, enemyImage);
-            gem = new Gem(gemStart, new Vector2(1, 0), playerSpeed, playerSize, gemImage);
+            gem1 = new Gem(gemStart1, new Vector2(1, 0), playerSpeed, playerSize, gemImage1);
+            gem2 = new Gem(gemStart2, new Vector2(1, 0), playerSpeed, playerSize, gemImage2);
+            gem3 = new Gem(gemStart3, new Vector2(1, 0), playerSpeed, playerSize, gemImage3);
+            Gems.Add(gem1);
+            Gems.Add(gem2);
+            Gems.Add(gem3);
             GemCounter = 0;
             camera.target=player.transform.position;
             camera.zoom = 2.0f;
-            tiledKartta=MapReader.LoadMapFromFile("kartta1.tmj");
-            //tiledPiikit = MapReader.LoadMapFromFile("kartta1.tmj");
+            tiledKartta=MapReader.LoadMapFromFile("karttav1.tmj");
             Raylib.SetTargetFPS(30);
         }
+        //Vaihdellaan pelin näkymiä tilan mukaan
         void GameLoop()
         {
             while(Raylib.WindowShouldClose()==false)
@@ -115,6 +136,7 @@ namespace Loppupeli
         void DrawGame()
         {
             Raylib.BeginMode2D(camera);
+            //Piirretään kartanpalaset
             int map_width = tiledKartta.layers[0].data.Length;
             int rows = map_width / tiledKartta.width;
             for (int row=0; row<rows; row++)
@@ -128,39 +150,13 @@ namespace Loppupeli
                     DrawTile(x, y, tileId);
                 }
             }
-            /*int map_width = tiledPiikit.layers[0].data.Length;
-            int rows = map_width / tiledKartta.width;
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < tiledPiikit.width; col++)
-                {
-                    int tileId = tiledPiikit.layers[0].data[row * tiledPiikit.width + col];
-                    int x = col * tiledPiikit.tilewidth;
-                    int y = row * tiledPiikit.tileheight;
-                    tileId--;
-                    DrawPiikki(x, y, tileId);
-                }
-            }*/
+
             player.Draw();
             enemy.Draw();
-            gem.Draw();
-            /*
-            //oikee
-            Raylib.DrawRectangle(40+12, 120+1, 4, 14, Raylib.BLUE);
-            //vasen
-            Raylib.DrawRectangle(40, 120+1, 4, 14, Raylib.DARKGREEN);
-            //bot
-            Raylib.DrawRectangle(40+1,120+12,14,4,Raylib.WHITE);
-            //top
-            Raylib.DrawRectangle(40+1, 120, 14, 4, Raylib.RED);
-            */
-            //oikee
-            Raylib.DrawRectangle(-30+12, 130+2, 4, 12, Raylib.BLUE);
-            //vasen
-            Raylib.DrawRectangle(-30, 130+2, 4, 12, Raylib.DARKGREEN);
-            //bot
-            Raylib.DrawRectangle(-28 +2,130+12,8,8,Raylib.WHITE);
-            //top
+            gem1.Draw();
+            gem2.Draw();
+            gem3.Draw();
+
             Raylib.DrawRectangle(-30 +2, 130, 12, 4, Raylib.RED);
             Raylib.DrawCircle(window_width / 2, window_height / 2, 20, Raylib.MAROON);
             Raylib.DrawText(Raylib.TextFormat($"Score:{GemCounter}"), player.transform.position.X+110, player.transform.position.Y+85, 20, Raylib.RED);
@@ -179,20 +175,40 @@ namespace Loppupeli
             cameraX = player.transform.position.X - 100;
             cameraY= player.transform.position.Y - 100;
             camera.target=new Vector2(cameraX,cameraY);
-            enemy.Update();
-            if (enemy.transform.position.X < enemyStart.X + 40)
+            //Näillä if-lausekkeilla laitetaan enemy liikkumaan edestakaisin
+            if (enemy.transform.position.X >= Rc)
             {
                 enemy.transform.direction.X *= -1.0f;
             }
-            if (enemy.transform.position.X > enemyStart.X - 40)
+            if (enemy.transform.position.X <= Lc)
             {
                 enemy.transform.direction.X *= -1.0f;
+            }
+
+            enemy.Update();
+            Rectangle playerRec = getRectangle(player.transform,player.collision);
+            Rectangle playerGRec = getGRect(player.transform, player.collision);
+            //Tässä tarkastetaAN osuuko pelaaja piikkeihin
+            if (mapPiikit.Count >= 2)
+            {
+                foreach (Rectangle collider in mapPiikit)
+                {
+                    if (Raylib.CheckCollisionRecs(collider, playerRec))
+                    {
+                        player.active = false;
+
+                    }
+                    if (Raylib.CheckCollisionRecs(collider, playerGRec))
+                    {
+                        player.active=false;
+                    }
+                }
             }
             Rectangle playerTRec = getTRect(player.transform, player.collision);
             Rectangle playerBRec = getBRect(player.transform, player.collision);
             Rectangle playerRRec = getRRect(player.transform, player.collision);
             Rectangle playerLRec = getLRect(player.transform, player.collision);
-            Rectangle playerGRec = getGRect(player.transform, player.collision);
+            //Tässä tarkastetaan osuuko pelaaja kartanpalasiin ja mistä suunnasta
             if (mapColliders.Count >= tiledKartta.layers[0].data.Length)
             {
                 foreach (Rectangle collider in mapColliders)
@@ -228,45 +244,39 @@ namespace Loppupeli
                     }
 
                 }
-                
-                player.isGround = isG;
 
+                        player.isGround = isG;
             }
-            Rectangle playerRec = getRectangle(player.transform,player.collision);
-            /*if (mapPiikit.Count >= tiledPiikit.layers[0].data.Length)
+            //Osuuko pelaaja kerättäviin esineisiin
+            foreach(Gem gemi in Gems)
             {
-                foreach (Rectangle collider in mapPiikit)
+                if (gemi.active == true)
                 {
-                    if (Raylib.CheckCollisionRecs(collider, playerRec))
+                    Rectangle gemRec = getRectangle(gemi.transform, gemi.collision);
+                    if(Raylib.CheckCollisionRecs(gemRec, playerRec))
                     {
-                        Console.WriteLine("Kuolit");
+                        GemCounter++;
+                        gemi.active = false;
                     }
                 }
-            }*/
-            if (gem.active == true)
-            {
-                Rectangle gemRec = getRectangle(gem.transform, gem.collision);
-                if(Raylib.CheckCollisionRecs(gemRec, playerRec))
-                {
-                    Console.WriteLine("keräsit timun!");
-                    GemCounter++;
-                    gem.active = false;
-                }
+
             }
+            //osuuko pelaaja vastustajaan
             if (enemy.active == true)
             {
                 Rectangle enemyRec = getRectangle(enemy.transform, enemy.collision);
                 if (Raylib.CheckCollisionRecs(enemyRec, playerRec))
                 {
-                    Console.WriteLine("kuolit!");
+                    player.active = false;
                     enemy.active = false;
                 }
             }
         }
+        //Piirtää kartanpalasen ja lisää sen colliderin listaan jonka avulla tarkastetaan törmäyksiä.
         void DrawTile(int x, int y, int tileId)
         {
             int tilesPerRow = 272 / tiledKartta.tilewidth;
-            //Console.WriteLine(tilesPerRow.ToString());
+
             double rowf = Math.Floor((double)tileId / (double)tilesPerRow);
 
             int row = Convert.ToInt32(rowf);
@@ -276,29 +286,16 @@ namespace Loppupeli
             int v = row * tiledKartta.tileheight;
             Vector2 xy= new Vector2(x, y);
             Raylib.DrawTextureRec(atlasImage, new Rectangle(u, v, tiledKartta.tilewidth, tiledKartta.tileheight), xy, Raylib.WHITE);
+            if (mapColliders.Count != tiledKartta.layers[0].data.Length && tileId == 0)
+            {
+                mapPiikit.Add(getRect(x, y, 16));
+            }
             if(mapColliders.Count!= tiledKartta.layers[0].data.Length&&tileId!=-1)
             {
                 mapColliders.Add(getRect(x,y,16));
             }
         }
-        /*void DrawPiikki(int x, int y, int tileId)
-        {
-            int tilesPerRow = 272 / tiledPiikit.tilewidth;
-            //Console.WriteLine(tilesPerRow.ToString());
-            double rowf = Math.Floor((double)tileId / (double)tilesPerRow);
-
-            int row = Convert.ToInt32(rowf);
-            int column = tileId % tilesPerRow;
-
-            int u = column * tiledPiikit.tilewidth;
-            int v = row * tiledPiikit.tileheight;
-            Vector2 xy = new Vector2(x, y);
-            Raylib.DrawTextureRec(piikitImage, new Rectangle(u, v, tiledPiikit.tilewidth, tiledPiikit.tileheight), xy, Raylib.WHITE);
-            if (mapPiikit.Count != tiledPiikit.layers[0].data.Length && tileId != -1)
-            {
-                mapPiikit.Add(getRect(x, y, 16));
-            }
-        }*/
+        //Tästä kerätään kaikkien collider kuutiot, Pelaajaa varten kerätään pelaajan joka puolelta collider jotta se ei mene kartan läpi.
         Rectangle getRectangle(TransformComponent t, CollisionComponent c)
         {
             Rectangle r = new Rectangle(t.position.X,
@@ -306,7 +303,6 @@ namespace Loppupeli
             return r;
         }
                     
-            
         Rectangle getBRect(TransformComponent t, CollisionComponent c)
         {
             Rectangle r=new Rectangle(t.position.X+2,t.position.Y+12,c.size.X-4,c.size.Y-12);
@@ -337,6 +333,7 @@ namespace Loppupeli
             Rectangle r = new Rectangle(x,y, size, size);
             return r;
         }
+        //Piirretään menuja
         void MainMenu()
         {
             Raylib.DrawText("Jumper",window_width/2-75, 30, 50, Raylib.RED);

@@ -15,6 +15,7 @@ namespace Loppupeli
         SpriteRenderer spriteRenderer;
         public CollisionComponent collision;
         public int gravity = 2;
+        public float velocity = 0.1f;
 
         public float direction = 0.0f;
 
@@ -25,12 +26,21 @@ namespace Loppupeli
             collision = new CollisionComponent(new Vector2(size, size));
             spriteRenderer = new SpriteRenderer(image, color, transform, collision);
         }
+        /// <summary>
+        /// Kuuntelee näppäimistöä ja hallitsee pelaajan painovoimaa
+        /// </summary>
         public void Update()
         {
+
             float deltaTime = Raylib.GetFrameTime();
             if (isGround==false)
             {
-                transform.position.Y += gravity;
+                transform.position.Y += gravity+velocity;
+                velocity += 0.1f;
+            }
+            if (isGround == true)
+            {
+                velocity = 0.1f;
             }
 
             if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && active == true)
@@ -42,10 +52,10 @@ namespace Loppupeli
             {
                 direction = 1.0f;
                 transform.position.X += direction * transform.speed * deltaTime;
+
             }
             if(Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && active == true&& isGround==true)
             {
-                Console.WriteLine("hyppäsit");
                 transform.position.Y -= (transform.speed*10) * deltaTime;
             }
             else
